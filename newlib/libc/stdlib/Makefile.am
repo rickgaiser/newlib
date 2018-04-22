@@ -17,7 +17,6 @@ LIB_SOURCES = \
 	atoi.c  	\
 	atol.c		\
 	bsearch.c	\
-	calloc.c	\
 	div.c  		\
 	drand48.c	\
 	dtoa.c 		\
@@ -38,8 +37,6 @@ LIB_SOURCES = \
 	ldiv.c  	\
 	ldtoa.c		\
 	lrand48.c	\
-	malign.c	\
-	malloc.c  	\
 	mblen.c		\
 	mblen_r.c	\
 	mbstowcs.c	\
@@ -50,7 +47,6 @@ LIB_SOURCES = \
 	mprec.c		\
 	mrand48.c	\
 	msize.c		\
-	mstats.c	\
 	mtrim.c		\
 	nrand48.c	\
 	putenv.c	\
@@ -59,7 +55,6 @@ LIB_SOURCES = \
 	rand.c		\
 	rand48.c	\
 	rand_r.c	\
-	realloc.c	\
 	seed48.c	\
 	setenv.c	\
 	setenv_r.c	\
@@ -80,9 +75,7 @@ LIB_SOURCES = \
 	wctomb.c	\
 	wctomb_r.c
 
-# Because of how libtool moves objects around, mallocr must be built last.
-LIBADD_OBJS = freer.$(oext) reallocr.$(oext) callocr.$(oext) cfreer.$(oext) malignr.$(oext) \
-	vallocr.$(oext) pvallocr.$(oext) mallinfor.$(oext) mallstatsr.$(oext) msizer.$(oext) malloptr.$(oext) mallocr.$(oext)
+LIBADD_OBJS = 
 
 libstdlib_la_LDFLAGS = -Xcompiler -nostdlib
 
@@ -102,44 +95,6 @@ endif # USE_LIBTOOL
 
 include $(srcdir)/../../Makefile.shared
 
-MALLOC_COMPILE = $(LIB_COMPILE) -DINTERNAL_NEWLIB
-
-mallocr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MALLOC -c $(srcdir)/mallocr.c -o $@
-
-freer.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_FREE -c $(srcdir)/mallocr.c -o $@
-
-reallocr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_REALLOC -c $(srcdir)/mallocr.c -o $@
-
-callocr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_CALLOC -c $(srcdir)/mallocr.c -o $@
-
-cfreer.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_CFREE -c $(srcdir)/mallocr.c -o $@
-
-malignr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MEMALIGN -c $(srcdir)/mallocr.c -o $@
-
-vallocr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_VALLOC -c $(srcdir)/mallocr.c -o $@
-
-pvallocr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_PVALLOC -c $(srcdir)/mallocr.c -o $@
-
-mallinfor.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MALLINFO -c $(srcdir)/mallocr.c -o $@
-
-mallstatsr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MALLOC_STATS -c $(srcdir)/mallocr.c -o $@
-
-msizer.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MALLOC_USABLE_SIZE -c $(srcdir)/mallocr.c -o $@
-
-malloptr.$(oext): mallocr.c
-	$(MALLOC_COMPILE) -DDEFINE_MALLOPT -c $(srcdir)/mallocr.c -o $@
-
 CHEWOUT_FILES= \
 	abort.def	\
 	abs.def		\
@@ -149,7 +104,6 @@ CHEWOUT_FILES= \
 	ecvtbuf.def	\
 	atoi.def 	\
 	bsearch.def	\
-	calloc.def	\
 	div.def		\
 	efgcvt.def 	\
 	envlock.def	\
@@ -157,13 +111,10 @@ CHEWOUT_FILES= \
 	getenv.def	\
 	labs.def	\
 	ldiv.def	\
-	malloc.def	\
-	mallocr.def	\
 	mblen.def	\
 	mbstowcs.def	\
 	mbtowc.def	\
 	mlock.def	\
-	mstats.def	\
 	qsort.def	\
 	rand.def	\
 	rand48.def	\

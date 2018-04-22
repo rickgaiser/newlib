@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -95,60 +95,19 @@ AUTOMAKE_OPTIONS = cygnus
 
 INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
 
-LIB_SOURCES = \
-	bcmp.c \
-	bcopy.c \
-	bzero.c \
-	index.c \
-	memchr.c \
-	memcmp.c \
-	memcpy.c \
-	memmove.c \
-	memset.c \
-	rindex.c \
-	strcat.c \
-	strchr.c \
-	strcmp.c \
-	strcasecmp.c \
-	strcoll.c \
-	strcpy.c \
-	strcspn.c \
-	strerror.c \
-	strlen.c  \
-	strlwr.c \
-	strncat.c \
-	strncmp.c \
-	strncasecmp.c \
-	strncpy.c \
-	strpbrk.c \
-	strrchr.c \
-	strspn.c \
-	strtok.c \
-	strtok_r.c \
-	strupr.c \
-	strxfrm.c  \
-	strstr.c \
-	swab.c \
-	u_strerr.c
+LIB_SOURCES =  	bcmp.c 	bcopy.c 	bzero.c 	index.c 	memchr.c 	memcmp.c 	memcpy.c 	memmove.c 	memset.c 	rindex.c 	strcat.c 	strchr.c 	strcmp.c 	strcasecmp.c 	strcoll.c 	strcpy.c 	strcspn.c 	strerror.c 	strlen.c  	strlwr.c 	strncat.c 	strncmp.c 	strncasecmp.c 	strncpy.c 	strpbrk.c 	strrchr.c 	strspn.c 	strtok.c 	strtok_r.c 	strupr.c 	strxfrm.c  	strstr.c 	swab.c 	u_strerr.c
 
 
 libstring_la_LDFLAGS = -Xcompiler -nostdlib
 
-@USE_LIBTOOL_TRUE@noinst_LTLIBRARIES = @USE_LIBTOOL_TRUE@libstring.la
-@USE_LIBTOOL_TRUE@libstring_la_SOURCES = @USE_LIBTOOL_TRUE@$(LIB_SOURCES)
-@USE_LIBTOOL_TRUE@noinst_DATA = @USE_LIBTOOL_TRUE@objectlist.awk.in
+@USE_LIBTOOL_TRUE@noinst_LTLIBRARIES = libstring.la
+@USE_LIBTOOL_TRUE@libstring_la_SOURCES = $(LIB_SOURCES)
+@USE_LIBTOOL_TRUE@noinst_DATA = objectlist.awk.in
 @USE_LIBTOOL_FALSE@noinst_DATA = 
-@USE_LIBTOOL_FALSE@noinst_LIBRARIES = @USE_LIBTOOL_FALSE@lib.a
-@USE_LIBTOOL_FALSE@lib_a_SOURCES = @USE_LIBTOOL_FALSE@$(LIB_SOURCES)
+@USE_LIBTOOL_FALSE@noinst_LIBRARIES = lib.a
+@USE_LIBTOOL_FALSE@lib_a_SOURCES = $(LIB_SOURCES)
 
-CHEWOUT_FILES = \
-bcmp.def	memcpy.def	strcmp.def	strncat.def strstr.def \
-bcopy.def	memmove.def	strcoll.def	strncmp.def strtok.def \
-bzero.def	memset.def	strcpy.def	strncpy.def strxfrm.def \
-index.def	rindex.def	strcspn.def	strpbrk.def swab.def \
-memchr.def	strcat.def	strerror.def	strrchr.def \
-memcmp.def	strchr.def	strlen.def	strspn.def \
-strcasecmp.def	strncasecmp.def strlwr.def	strupr.def
+CHEWOUT_FILES =  bcmp.def	memcpy.def	strcmp.def	strncat.def strstr.def bcopy.def	memmove.def	strcoll.def	strncmp.def strtok.def bzero.def	memset.def	strcpy.def	strncpy.def strxfrm.def index.def	rindex.def	strcspn.def	strpbrk.def swab.def memchr.def	strcat.def	strerror.def	strrchr.def memcmp.def	strchr.def	strlen.def	strspn.def strcasecmp.def	strncasecmp.def strlwr.def	strupr.def
 
 
 SUFFIXES = .def
@@ -197,7 +156,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(lib_a_SOURCES) $(libstring_la_SOURCES)
 OBJECTS = $(lib_a_OBJECTS) $(libstring_la_OBJECTS)

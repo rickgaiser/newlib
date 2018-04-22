@@ -1,0 +1,6 @@
+27-12-2002 - Nicholas Van Veen (nickvv@xtra.co.nz)
+
+  * Released as version 1.10.0-1.81
+  * Replaced _buggy_ newlib-1.10.0 malloc code with _working_ malloc code
+    from ps2lib (before the libc portion got removed). This was just a very
+    quick 5 min hack, so is quite a messy job.

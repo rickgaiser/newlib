@@ -1,0 +1,32 @@
+
+
+This is a PS2 version of newlib.  It can be compiled with the ee-binutils-gcc
+package available from ps2dev.sf.net version ee-bintuils-gcc-2.95.2v2-1
+
+To compile first compile ee-binutils-gcc as
+
+./configure --target=mips64r5900-ps2-elf --prefix=/usr/ps2dev/ee --with-newlib
+make
+make install
+
+then compile and install newlib with
+
+mkdir build
+cd build
+../configure --target=mips64r5900-ps2-elf --prefix=/usr/ps2dev/ee -v
+make
+make install
+
+
+To function correctly this also requires PS2LIB version 1.8 or later.
+You can get ps2lib from ps2dev.livemedia.com.au or ps2dev.sourceforge.net
+
+
+
+More information available at
+
+http://ps2dev.sourceforge.net
+http://ps2dev.livemedia.com.au
+
+
+
