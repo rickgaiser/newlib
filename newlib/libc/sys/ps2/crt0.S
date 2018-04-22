@@ -1,67 +1,176 @@
-	.set noreorder
+# _____     ___ ____     ___ ____
+#  ____|   |    ____|   |        | |____|
+# |     ___|   |____ ___|    ____| |    \    PS2DEV Open Source Project.
+#-----------------------------------------------------------------------
+# Copyright (c) 2001-2007 ps2dev - http://www.ps2dev.org
+# Licenced under Academic Free License version 2.0
+# Review ps2sdk README & LICENSE files for further details.
+#
+# Standard startup file.
 
-#include "regs.S"
+   .weak  _init
+   .type  _init, @function
 
-.text
-	.p2align 4
-	.global	_start
-	.ent	_start
+   .weak  _fini
+   .type  _fini, @function
+
+   .extern   _heap_size
+   .extern   _stack
+   .extern   _stack_size
+
+   .weakext _ps2sdk_args_parse_weak, _ps2sdk_args_parse
+   .globl   _ps2sdk_args_parse_weak
+   .type    _ps2sdk_args_parse_weak, @function
+
+   .weakext _ps2sdk_libc_init_weak, _ps2sdk_libc_init
+   .globl   _ps2sdk_libc_init_weak
+   .type    _ps2sdk_libc_init_weak, @function
+
+   .weakext _ps2sdk_libc_deinit_weak, _ps2sdk_libc_deinit
+   .globl   _ps2sdk_libc_deinit_weak
+   .type    _ps2sdk_libc_deinit_weak, @function
+
+   .extern _InitSys
+   .extern Exit
+   .extern FlushCache
+
+   .set   noat
+   .set   noreorder
+
+   .text
+   .align   2
+
+   .globl  _start
+   .ent    _start
 _start:
 
-# Clear bss
 zerobss:
-	la	v0, _fbss
-	la	v1, _end
-3:
-	nop
-	nop
-	nop
-	sq	zero, (v0)
-	sltu	t0, v0, v1
-	bne	t0, zero, 3b
-	addiu	v0, v0, 16
+   # clear bss area
 
+   la   $2, _fbss
+   la   $3, _end
 
-	/* Setup gp */
-	la	gp, _gp
+1:
+   sltu   $1, $2, $3
+   beq   $1, $0, 2f
+   nop
+   sq   $0, ($2)
+   addiu   $2, $2, 16
+   j   1b
+   nop
+2:
 
-	/* Setup stack */
-	la	t0, 0x2000000	/* 32MB */
-	la	t1, K0BASE
-	addu	t0, t0, t1
-	/* Subtract enough for main's arguments */
-	subu	t0, t0, 32
-	move	sp, t0
-	sw	sp, __stackbase
+setupthread:
+   # setup current thread
 
-	/* Now setup arguments and call main() */
-#	addiu	sp, sp, -4
-	move	a0, zero
-	jal	main
-	nop
-#	sw	ra, (sp)
+   la   $4, _gp
+   la   $5, _stack
+   la   $6, _stack_size
+   la   $7, _args
+   la   $8, _root
+   move   $gp, $4
+   addiu   $3, $0, 60
+   syscall         # SetupThread(_gp, _stack, _stack_size, _args, _root)
+   move   $sp, $2
 
-#	lw	ra, (sp)
-	jr	ra
-#	addiu	sp, sp, 4
+   # initialize heap
 
-	.end	_start
+   la   $4, _end
+   la   $5, _heap_size
+   addiu   $3, $0, 61
+   syscall         # SetupHeap(_end, _heap_size)
 
-	.global	_exit
-	.ent	_exit
+   # writeback data cache
+   jal FlushCache  # FlushCache(0)
+   move   $4, $0
+
+parseargs:
+   # call ps2sdk argument parsing (weak)
+
+   la   $16, _args
+   la   $8, _ps2sdk_args_parse_weak
+   beqz   $8, 1f
+   lw   $4, ($16)
+
+   jalr   $8      # _ps2sdk_args_parse(argc, argv)
+   addiu   $5, $16, 4
+1:
+
+libc_init:
+   # initialize ps2sdk libc (weak)
+
+   la   $8, _ps2sdk_libc_init_weak
+   beqz   $8, 1f
+   nop
+   jalr   $8      # _ps2sdk_libc_init()
+   nop
+1:
+
+ctors:
+   # call global constructors (weak)
+
+   la   $8, _init
+   beqz   $8, 1f
+   nop
+   jalr   $8      # _init()
+   nop
+1:
+   # Initialize the kernel (Apply necessary patches).
+   jal _InitSys
+   nop
+
+   # call main
+   ei
+
+   lw   $4, ($16)
+   jal   main      # main(argc, argv)
+   addiu   $5, $16, 4
+
+   # call _exit
+
+   j   _exit      # _exit(retval)
+   move   $4, $2
+   .end   _start
+
+   .align   3
+
+   .globl _exit
+   .ent   _exit
+   .text
 _exit:
-	jr	ra
-	nop
 
-	.end	_exit
+dtors:
+   # call global destructors (weak)
 
-	.bss
-	.align	6
-	.global	__stackbase
-__stackbase:
-	.space	4
-savedra:
-	.space	4
-_args_ptr:
-	.space	4
-	.align	4
+   la   $8, _fini
+   beqz   $8, 1f
+   move $16, $4
+   jalr   $8      # _fini()
+   nop
+1:
+
+libc_uninit:
+   # uninitialize ps2sdk libc (weak)
+
+   la   $8, _ps2sdk_libc_deinit_weak
+   beqz   $8, 1f
+   nop
+   jalr   $8      # _ps2sdk_libc_deinit()
+   nop
+1:
+
+   j Exit         # Exit(retval) (noreturn)
+   move   $4, $16
+
+   .end   _exit
+
+   .ent   _root
+_root:
+   addiu   $3, $0, 35
+   syscall         # ExitThread() (noreturn)
+   .end   _root
+
+   .bss
+   .align   6
+_args:
+   .space   4+16*4+256   # argc, 16 arguments, 256 bytes payload
