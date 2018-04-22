@@ -886,6 +886,9 @@ case "${target}" in
     noconfigdirs="$noconfigdirs gprof target-libffi"   # same as generic mips
     target_configdirs="${target_configdirs} target-bsp target-libstub target-cygmon"
    ;;
+  mips64r5900*-*-*)
+    noconfigdirs="$noconfigdirs target-libgloss"
+    ;;
   mips*-*-*)
     noconfigdirs="$noconfigdirs gprof target-libffi"
     ;;
