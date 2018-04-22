@@ -135,12 +135,21 @@ $L16:
 		
 $L9:
 $L15:
-	lb	$2,0($4)
-	#nop
 	.set	noreorder
 	.set	nomacro
-	bnel	$2,$0,$L9
+
+	lb	$2,0($4)
+	#nop
+	beq	$2,$0,1f
 	addu	$4,$4,1
+
+	lb	$2,0($4)
+	#nop
+	bne	$2,$0,$L9
+	addu	$4,$4,1
+1:
+	subu	$4,$4,1
+
 	.set	macro
 	.set	reorder
 

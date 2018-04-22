@@ -75,7 +75,7 @@ $L16:
 	pand	$3,$3,$6
 	dli	$6,0x0101010101010101
 	pcpyud	$2,$3,$5
-	or	$2,$2,$3
+	or	$3,$2,$3
 	.set	noreorder
 	.set	nomacro
 	beql	$3,$0,$L16
